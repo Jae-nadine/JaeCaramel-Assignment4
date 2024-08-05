@@ -20,7 +20,7 @@ public class CourseManager {
 		List<Student> course3 = new ArrayList<>();
 
 		try (BufferedReader br = new BufferedReader(new FileReader(masterListFile))) {
-			String line = br.readLine();
+			String line = br.readLine(); //Read header
 			while ((line = br.readLine()) != null) {
 				String[] values = line.split(",");
 
@@ -69,10 +69,18 @@ public class CourseManager {
 	private static void writeToFile(List<Student> students, String fileName) {
 		try (FileWriter writer = new FileWriter(fileName)) {
 			writer.write("Student ID, Student Name, Course, Grade\n");
+			System.out.println();
+			System.out.println();
+			System.out.println("Content of " + fileName + ":");
+			System.out.println();
+			System.out.println("Student ID, Student Name, Course, Grade");
+			
 			for (Student student : students) {
-				writer.write(student.toString() + "\n");
+				String studentData = student.toString();
+				writer.write(studentData + "\n");
+				System.out.println(studentData);
 			}
-System.out.println(fileName);
+
 		}
 
 		catch (IOException e) {
@@ -82,3 +90,11 @@ System.out.println(fileName);
 	}
 
 }
+
+
+
+
+
+//System.out.println(); //separating each course content in console by adding newline for separation in 
+//between lines 72 and 74
+
