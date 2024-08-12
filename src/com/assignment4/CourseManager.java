@@ -4,23 +4,24 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 
 public class CourseManager {
 
 	public static void main(String[] args) {
 
-		String masterListFile = "/Users/JaeCaramelSmith/Desktop/student-master-list.csv";
+		String masterListFile = "student-master-list.csv";
 
-		List<Student> course1 = new ArrayList<>();
-		List<Student> course2 = new ArrayList<>();
-		List<Student> course3 = new ArrayList<>();
+		Student[] course1 = new Student[100];
+		Student[] course2 = new Student[100];
+		Student[] course3 = new Student[100];
+		int course1Count = 0;
+		int course2Count = 0;
+		int course3Count = 0;
 
 		try (BufferedReader br = new BufferedReader(new FileReader(masterListFile))) {
-			String line = br.readLine(); //Read header
+			String line = br.readLine(); // Read header
 			while ((line = br.readLine()) != null) {
 				String[] values = line.split(",");
 
@@ -34,15 +35,15 @@ public class CourseManager {
 						Student student = new Student(studentID, studentName, course, grade);
 
 						if (course.startsWith("COMPSCI")) {
-							course1.add(student);
+							course1[course1Count++] = student;
 						}
 
 						else if (course.startsWith("APMTH")) {
-							course2.add(student);
+							course2[course2Count++] = student;
 						}
 
 						else if (course.startsWith("STAT")) {
-							course3.add(student);
+							course3[course3Count++] = student;
 						}
 
 					} catch (NumberFormatException e) {
@@ -54,19 +55,17 @@ public class CourseManager {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		// Sort by grade in descending order
 
-		Comparator<Student> byGradeDescending = Comparator.comparingInt(Student::getGrade).reversed();
-		Collections.sort(course1, byGradeDescending);
-		Collections.sort(course2, byGradeDescending);
-		Collections.sort(course3, byGradeDescending);
+		Arrays.sort(course1, 0, course1Count, Comparator.comparingInt(Student::getGrade).reversed());
+		Arrays.sort(course2, 0, course2Count, Comparator.comparingInt(Student::getGrade).reversed());
+		Arrays.sort(course3, 0, course3Count, Comparator.comparingInt(Student::getGrade).reversed());
 
-		writeToFile(course1, "course1.csv");
-		writeToFile(course2, "course2.csv");
-		writeToFile(course3, "course3.csv");
+		writeToFile(course1, course1Count, "course1.csv");
+		writeToFile(course2, course2Count, "course2.csv");
+		writeToFile(course3, course3Count, "course3.csv");
 	}
 
-	private static void writeToFile(List<Student> students, String fileName) {
+	private static void writeToFile(Student[] students, int studentCount, String fileName) {
 		try (FileWriter writer = new FileWriter(fileName)) {
 			writer.write("Student ID, Student Name, Course, Grade\n");
 			System.out.println();
@@ -74,12 +73,12 @@ public class CourseManager {
 			System.out.println("Content of " + fileName + ":");
 			System.out.println();
 			System.out.println("Student ID, Student Name, Course, Grade");
-			
-			for (Student student : students) {
-				String studentData = student.toString();
-				writer.write(studentData + "\n");
-				System.out.println(studentData);
+
+			for (int i = 0; i < studentCount; i++) {
+				writer.write(students[i].toString() + "/n");
+				System.out.println(students[i].toString());
 			}
+			System.out.println();
 
 		}
 
@@ -91,10 +90,4 @@ public class CourseManager {
 
 }
 
-
-
-
-
-//System.out.println(); //separating each course content in console by adding newline for separation in 
-//between lines 72 and 74
-
+//System.out.println(); //separating each course content in console by adding newline 
